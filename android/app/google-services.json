@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "940770512219",
+    "project_id": "login-a40c2",
+    "storage_bucket": "login-a40c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940770512219:android:2c45965bba31e043315e7e",
+        "android_client_info": {
+          "package_name": "com.haroon.login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940770512219-3am854q6scv8a7mer1shef777n35njac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDLOBnQc8fpgk-Il9FwIa6YNypiGTnJcU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940770512219-3am854q6scv8a7mer1shef777n35njac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
