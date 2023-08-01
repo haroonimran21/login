@@ -1,111 +1,107 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:login/pages/signup_page.dart';
+import 'package:login/widgets/round_button.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-
-  String _errorMessage = '';
-
-  bool _isLogin = true;
-  bool _isForgotPassword = false;
-
-  void _toggleForm() {
-    setState(() {
-      _isLogin = !_isLogin;
-      _errorMessage = '';
-    });
-  }
-
-  void _toggleForgotPassword() {
-    setState(() {
-      _isForgotPassword = !_isForgotPassword;
-      _errorMessage = '';
-    });
-  }
-
-  void _login() {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-
-    // Implement login logic
-  }
-
-  void _signup() {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String confirmPassword = _confirmPasswordController.text;
-
-    // Implement signup logic
-  }
-
-  void _resetPassword() {
-    String email = _emailController.text;
-
-    // Implement reset password logic
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login/SignUp/forgot Password'),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            if (!_isLogin) SizedBox(height: 16.0),
-            if (!_isLogin)
-              TextFormField(
-                controller: _confirmPasswordController,
-                decoration: InputDecoration(labelText: 'Confirm Password'),
-                obscureText: true,
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Center(child: Text("Login")),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: emailController,
+                      decoration: InputDecoration(
+                          hintText: "Email",
+                          prefixIcon: Icon(Icons.email_outlined)),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Email";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                        keyboardType: TextInputType.text,
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: "Password",
+                            prefixIcon: Icon(Icons.lock_open)),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please Enter Password";
+                          }
+                          return null;
+                        }),
+                  ],
+                ),
               ),
-            SizedBox(height: 24.0),
-            ElevatedButton(
-              onPressed: _isLogin ? _login : _signup,
-              child: Text(_isLogin ? 'Login' : 'Signup'),
-            ),
-            if (!_isForgotPassword)
-              TextButton(
-                onPressed: _toggleForm,
-                child: Text(_isLogin
-                    ? "Don't have an account? Sign up."
-                    : 'Already have an account? Login.'),
+              SizedBox(height: 50),
+              RoundButton(
+                title: "Login",
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {}
+                },
               ),
-            if (_isForgotPassword)
-              TextButton(
-                onPressed: _toggleForgotPassword,
-                child: Text('Go back to login'),
+              SizedBox(
+                height: 30,
               ),
-            if (!_isLogin && !_isForgotPassword)
-              TextButton(
-                onPressed: _toggleForgotPassword,
-                child: Text('Forgot Password?'),
-              ),
-            Text(
-              _errorMessage,
-              style: TextStyle(color: Colors.red),
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Don't hve an account?"),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUPPage()));
+                      },
+                      child: Text("Sign Up"))
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

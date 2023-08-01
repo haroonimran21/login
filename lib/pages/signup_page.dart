@@ -12,6 +12,7 @@ class SignUPPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUPPage> {
   final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -78,9 +79,12 @@ class _SignUpPageState extends State<SignUPPage> {
               title: "Sign Up",
               onTap: () {
                 if (_formKey.currentState!.validate()) {
-                  _auth.createUserWithEmailAndPassword(
-                      email: emailController.text.toString(),
-                      password: passwordController.text.toString());
+                  _auth
+                      .createUserWithEmailAndPassword(
+                          email: emailController.text.toString(),
+                          password: passwordController.text.toString())
+                      .then((value) {})
+                      .onError((error, stackTrace) {});
                 }
               },
             ),
