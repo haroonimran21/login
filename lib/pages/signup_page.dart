@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login/models/utillls.dart';
 import 'package:login/pages/login_page.dart';
 import 'package:login/widgets/round_button.dart';
 
@@ -11,10 +12,11 @@ class SignUPPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUPPage> {
+  bool loading = false;
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -23,6 +25,25 @@ class _SignUpPageState extends State<SignUPPage> {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  void signUp() {
+    {
+      setState(() {
+        loading = true;
+      });
+      _auth
+          .createUserWithEmailAndPassword(
+              email: emailController.text.toString(),
+              password: passwordController.text.toString())
+          .then((value) {
+        setState(() {
+          loading = false;
+        });
+      }).onError((error, stackTrace) {
+        Utills().toastMessage(error.toString());
+      });
+    }
   }
 
   @override
@@ -77,15 +98,9 @@ class _SignUpPageState extends State<SignUPPage> {
             SizedBox(height: 50),
             RoundButton(
               title: "Sign Up",
+              loading: loading,
               onTap: () {
-                if (_formKey.currentState!.validate()) {
-                  _auth
-                      .createUserWithEmailAndPassword(
-                          email: emailController.text.toString(),
-                          password: passwordController.text.toString())
-                      .then((value) {})
-                      .onError((error, stackTrace) {});
-                }
+                if (_formKey.currentState!.validate()) signUp();
               },
             ),
             SizedBox(

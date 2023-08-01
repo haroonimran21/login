@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:login/models/utillls.dart';
+import 'package:login/pages/home_page.dart';
+import 'package:login/pages/login_with_phone.dart';
 import 'package:login/pages/signup_page.dart';
 import 'package:login/widgets/round_button.dart';
 
@@ -11,15 +15,41 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool loading = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  void login() {
+    setState(() {
+      loading = true;
+    });
+    _auth
+        .createUserWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text.toString())
+        .then((value) {
+      Utills().toastMessage(value.user!.email.toString());
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+      setState(() {
+        loading = false;
+      });
+    }).onError((error, stackTrace) {
+      debugPrint(error.toString());
+      Utills().toastMessage(error.toString());
+      setState(() {
+        loading = false;
+      });
+    });
   }
 
   @override
@@ -79,8 +109,11 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 50),
               RoundButton(
                 title: "Login",
+                loading: loading,
                 onTap: () {
-                  if (_formKey.currentState!.validate()) {}
+                  if (_formKey.currentState!.validate()) {
+                    login();
+                  }
                 },
               ),
               SizedBox(
@@ -97,8 +130,28 @@ class _LoginPageState extends State<LoginPage> {
                             MaterialPageRoute(
                                 builder: (context) => SignUPPage()));
                       },
-                      child: Text("Sign Up"))
+                      child: Text("Sign Up")),
                 ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LoginWithPhone()));
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(color: Colors.black)),
+                  child: Center(
+                    child: Text("Login with phone"),
+                  ),
+                ),
               )
             ],
           ),
